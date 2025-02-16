@@ -24,6 +24,7 @@ public class Main {
             System.out.println("Name: " + resultSet.getString("name"));
             System.out.println("Age: " + resultSet.getInt("age"));
         }
-
+        statement3.close();
+        conn.close();
     }
 }
