@@ -2,6 +2,7 @@ package hexlet.code;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
@@ -13,9 +14,15 @@ public class Main {
                 stmt.execute(sql);
             }
 
-            var sql2 = "INSERT INTO users (username, age) VALUES ('Vlad', 19), ('Vika', 19)";
-            try (var stmt2 = conn.createStatement()) {
-                stmt2.executeUpdate(sql2);
+            var sql2 = "INSERT INTO users (username, age) VALUES (?, ?)";
+            try (var preparedStmt = conn.prepareStatement(sql2, Statement.RETURN_GENERATED_KEYS)) {
+                preparedStmt.setString(1, "Vlad");
+                preparedStmt.setInt(2, 19);
+                preparedStmt.executeUpdate();
+
+                preparedStmt.setString(1, "Vika");
+                preparedStmt.setInt(2, 19);
+                preparedStmt.executeUpdate();
             }
 
             var sql3 = "SELECT * FROM users";
