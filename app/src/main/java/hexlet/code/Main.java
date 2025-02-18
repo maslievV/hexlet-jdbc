@@ -14,25 +14,16 @@ public class Main {
                 stmt.execute(sql);
             }
 
-            var sql2 = "INSERT INTO users (username, age) VALUES (?, ?)";
-            try (var preparedStmt = conn.prepareStatement(sql2, Statement.RETURN_GENERATED_KEYS)) {
-                preparedStmt.setString(1, "Vlad");
-                preparedStmt.setInt(2, 19);
-                preparedStmt.executeUpdate();
+            var dao = new UserDAO(conn);
+            var user = new User("John", 22);
+            System.out.println(user.getId());
+            dao.save(user);
+            System.out.println(user.getId());
 
-                preparedStmt.setString(1, "Vika");
-                preparedStmt.setInt(2, 19);
-                preparedStmt.executeUpdate();
-            }
-
-            var sql3 = "SELECT * FROM users";
-            try (var stmt3 = conn.createStatement()) {
-                var rs = stmt3.executeQuery(sql3);
-                while (rs.next()) {
-                    System.out.printf("Name: %s, age: %d%n", rs.getString("username"), rs.getInt("age"));
-                }
-            }
+            var user2 = new User("Lock", 90);
+            dao.save(user2);
+            dao.delete(2L);
+            System.out.println(dao.find(2L).toString());
         }
-
     }
 }
